@@ -1,13 +1,9 @@
 package it.polito.dp2.NFFG.sol1;
 
-
-
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,12 +14,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
-import org.xml.sax.SAXException;
-
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
 import it.polito.dp2.NFFG.LinkReader;
 import it.polito.dp2.NFFG.NffgReader;
@@ -55,7 +45,6 @@ public class NffgInfoSerializer {
 	private ObjectFactory object;
 	private NffgServiceType serviceJAXB;
 
-	
 	public NffgInfoSerializer() throws NffgVerifierException {
 		NffgVerifierFactory factory = NffgVerifierFactory.newInstance();
 		verifier = factory.newNffgVerifier();
@@ -68,7 +57,11 @@ public class NffgInfoSerializer {
 	{
 		try {
 			NffgInfoSerializer s = new NffgInfoSerializer();
-			s.retriveXML(args[0]);
+			if(args[0] != null)
+				s.retriveXML(args[0]);
+			else
+				throw new NffgVerifierException("ARGS NOT Valid");
+			
 			
 		} catch (NffgVerifierException e) {
 			// TODO Auto-generated catch block
@@ -82,9 +75,9 @@ public class NffgInfoSerializer {
 
 	private void retriveXML(String args) {
 		// TODO Auto-generated method stub
+		try {
 		if(args != null)
 		{
-			try {
 				JAXBContext jc = JAXBContext.newInstance( "it.polito.dp2.NFFG.sol1.jaxb" );
 				Marshaller m = jc.createMarshaller();
 			 	FileOutputStream xmlOut = new FileOutputStream(args); 
@@ -92,24 +85,25 @@ public class NffgInfoSerializer {
 				
 				JAXBElement<NffgServiceType> jaxbElement = object.createNffgService(serviceJAXB);
 	            m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-	  //          File schema = new File("xsd/nffgInfo.xsd");	
-	 //           SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-	 //           Schema mySchema = sf.newSchema(schema);
-	 //           m.setSchema(mySchema);
+
 	            m.marshal( jaxbElement, xmlOut );	         
 
 			
-			} catch (JAXBException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}     
-		}else
-		{
-			System.err.println("[Serializer]Arg name null");
 		}
+		
+		}catch (JAXBException e) {
+				System.err.println("Could not instantiate the JAXB context.");
+				e.printStackTrace();
+				System.exit(1);
+			} catch (FileNotFoundException e) {
+				System.err.println("Could not find the file.");
+				e.printStackTrace();
+				System.exit(1);
+			} catch (Exception e) {
+				System.err.println("Generic Error");
+				e.printStackTrace();
+				System.exit(1);
+			}     
 		
 	}
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE nffgInfo SYSTEM "nffgInfo.dtd" >
+<nffgInfo>
+<Nffgs>
+    <Nffg name="Nffg4">
+            <UpdateTime>2016-09-25T20:26:20.000+02:00</UpdateTime>
+            <Nodes>
+                <Node name="FW1" funcType="FW">
+                    <Links>
+                        <Link name="Link28">
+                            <destinationNode name="NAT7"/>
+                        </Link>
+                        <Link name="Link63">
+                            <destinationNode name="MAILSERVER1"/>
+                        </Link>
+                        <Link name="Link61">
+                            <destinationNode name="MAILSERVER2"/>
+                        </Link>
+                    </Links>
+                </Node>
+                <Node name="MAILSERVER2" funcType="MAIL_SERVER">
+                    <Links>
+                        <Link name="Link10">
+                            <destinationNode name="VPN3"/>
+                        </Link>
+                        <Link name="Link47">
+                            <destinationNode name="CACHE4"/>
+                        </Link>
+                    </Links>
+                </Node>
+          </Nodes>
+           <Policies>
+                <ReachabilityPolicy PolicyResult="0" name="Policy64">
+                    <sourceNode name="WEBCLIENT0"/>
+                    <destinationNode name="WEBSERVER5"/>
+                </ReachabilityPolicy>
+            </Policies>
+        </Nffg>
+     </Nffgs>
+</nffgInfo>

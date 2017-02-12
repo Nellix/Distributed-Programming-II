@@ -9,7 +9,6 @@ import it.polito.dp2.NFFG.NffgReader;
 import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.NodeReader;
 import it.polito.dp2.NFFG.sol1.jaxb.LinkType;
-import it.polito.dp2.NFFG.sol1.jaxb.NffgType;
 import it.polito.dp2.NFFG.sol1.jaxb.NodeType;
 
 public class NodeReaderExt extends NamedEntityExt implements NodeReader {

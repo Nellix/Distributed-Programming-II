@@ -1,16 +1,12 @@
 package it.polito.dp2.NFFG.sol1;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import it.polito.dp2.NFFG.FunctionalType;
-import it.polito.dp2.NFFG.NffgReader;
 import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.NodeReader;
-import it.polito.dp2.NFFG.PolicyReader;
 import it.polito.dp2.NFFG.TraversalPolicyReader;
-import it.polito.dp2.NFFG.VerificationResultReader;
 import it.polito.dp2.NFFG.sol1.jaxb.PolicyType;
 import it.polito.dp2.NFFG.sol1.jaxb.TraversalPolicyType;
 

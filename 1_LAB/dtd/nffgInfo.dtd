@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT nffgInfo (Nffgs)>
+<!ELEMENT Nffgs ((Nffg)*)>
+
+<!ELEMENT Nffg (UpdateTime, Nodes, Policies)>
+<!ATTLIST Nffg
+	name CDATA #REQUIRED >
+
+<!ELEMENT updateTime (#PCDATA)>
+<!ELEMENT Nodes ((Node)*)>
+
+<!ELEMENT Node (Links)>
+<!ATTLIST Node
+	funcType (FW|DPI|NAT|SPAM|CACHE|VPN|WEB_SERVER|WEB_CLIENT|MAIL_SERVER|MAIL_CLIENT) #REQUIRED
+	name CDATA #REQUIRED >
+
+<!ELEMENT Policies ((ReachabilityPolicy)*, (TraversalPolicy)*)>
+
+<!ELEMENT ReachabilityPolicy (((verificationResult)?), (sourceNode, destinationNode))>
+<!ATTLIST ReachabilityPolicy
+	PolicyResult (0|1) #REQUIRED
+	name CDATA #REQUIRED >
+
+<!ELEMENT TraversalPolicy ((((verificationResult)?), (sourceNode, destinationNode)), (traversedFunctionalTypes))>
+<!ATTLIST TraversalPolicy
+	PolicyResult (0|1) #REQUIRED
+	name CDATA #REQUIRED >
+
+<!ELEMENT funcType (#PCDATA)>
+<!ELEMENT Links ((Link)*)>
+
+<!ELEMENT Link (destinationNode)>
+<!ATTLIST Link
+	name CDATA #REQUIRED >
+
+<!ELEMENT destinationNode EMPTY>
+<!ATTLIST destinationNode
+	name CDATA #REQUIRED >
+
+<!ELEMENT verificationResult ANY>
+
+<!ELEMENT sourceNode EMPTY>
+<!ATTLIST sourceNode
+	name CDATA #REQUIRED >
+
+<!ELEMENT traversedFunctionalTypes ((funcType)*)>
+<!ELEMENT verificationResultMsg (#PCDATA)>
+<!ELEMENT verificationTime (#PCDATA)>

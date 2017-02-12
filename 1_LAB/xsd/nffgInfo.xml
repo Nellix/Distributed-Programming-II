@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<NffgService xmlns="http://www.example.org/nffgInfo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/nffgInfo nffgInfo.xsd">
+    <Nffgs>
+        <Nffg name="Nffg4">
+            <UpdateTime>2016-09-25T20:26:20.000+02:00</UpdateTime>
+            <Nodes>
+                <Node name="FW1">
+                    <Type>FW</Type>
+                    <Links>
+                        <Link name="Link28">
+                            <destinationNode name="NAT7"/>
+                        </Link>
+                        <Link name="Link63">
+                            <destinationNode name="MAILSERVER1"/>
+                        </Link>
+                        <Link name="Link61">
+                            <destinationNode name="MAILSERVER2"/>
+                        </Link>
+                    </Links>
+                </Node>
+                <Node name="MAILSERVER2">
+                    <Type>MAIL_SERVER</Type>
+                    <Links>
+                        <Link name="Link10">
+                            <destinationNode name="VPN3"/>
+                        </Link>
+                        <Link name="Link47">
+                            <destinationNode name="CACHE4"/>
+                        </Link>
+                    </Links>
+                </Node>
+          </Nodes>
+            <Policies>
+                <ReachabilityPolicy PolicyResult="false" name="Policy66">
+                    <VerificationResult>
+                        <VerificationResult>true</VerificationResult>
+                        <VerificationMessage>Policy verificarion result true</VerificationMessage>
+                        <VerificationTime>2016-09-25T13:52:20.000+02:00</VerificationTime>
+                    </VerificationResult>
+                    <SrcNode name="WEBCLIENT0"/>
+                    <DstNode name="MAILSERVER2"/>
+                </ReachabilityPolicy>
+                <ReachabilityPolicy PolicyResult="false" name="Policy64">
+                    <SrcNode name="WEBCLIENT0"/>
+                    <DstNode name="WEBSERVER5"/>
+                </ReachabilityPolicy>
+            </Policies>
+        </Nffg>
+     </Nffgs>
+</NffgService>

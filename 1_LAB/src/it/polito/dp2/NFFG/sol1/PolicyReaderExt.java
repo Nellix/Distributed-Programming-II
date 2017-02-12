@@ -4,10 +4,8 @@ import it.polito.dp2.NFFG.NffgReader;
 import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.PolicyReader;
 import it.polito.dp2.NFFG.VerificationResultReader;
-import it.polito.dp2.NFFG.sol1.jaxb.NameEntityType;
-import it.polito.dp2.NFFG.sol1.jaxb.NffgType;
 import it.polito.dp2.NFFG.sol1.jaxb.PolicyType;
-import it.polito.dp2.NFFG.sol1.jaxb.ReachabilityPolicyType;
+
 
 public class PolicyReaderExt extends NamedEntityExt implements PolicyReader{
 

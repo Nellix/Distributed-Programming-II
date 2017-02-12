@@ -1,0 +1,40 @@
+In the following document I will expose my choices about the XSD desing, choices concern:
+
+1. Avoiding Redundance
+
+Starting from the work done on the dtd file, we have improved the relationship between nodes and link.
+Now I've used the key/keyref feature of XSD document to associate destinationNode of links to their respective Node,
+in the node list of the nffg.
+
+2. Data Consistency
+
+Nodes have been associated also to policies sourceNode and destinationNode always via key/keyref mechanism.
+This mecanism provide us important features:
+- uniqueness of node inside a single nffg
+- assurance that link and policy refer only to existing node
+
+To provide uniqueness to nffg name
+
+To further improve consistency for data we've used XSD dataType such as boolean or dateTime.
+Boolean is used instead of the 0|1 enumerated list used in the DTD, dateTime is represented using dateTime xsd type.
+The dateTime type format for the date is equivalent to the one specified in the dtd documentation, and is easily
+convertible to a GregorianCalendar java class.
+
+To deal with the enumeration of functionalType I've used in all of the schema a new type based on the enumeration
+restriction of the string XSD type, that can be mapped to a java Enum by the jaxb framework.
+
+To assure every entity name is simple and does not create potential problem to the system caused by special characters
+and spaces I've also restricted the string for the name.
+
+3. Use of Inheritance
+
+To be easily mappable to the java interfaces provided, I've exploited XSD inheritance during elements type definition
+Each type of element is a complexElement that follow the same hierarchy as the Java interfaces:
+NamedEntity
+    Nffg
+    Link
+    Node
+    Policy
+        ReachabilityPolicy
+            TraversalPolicy
+Unfortunately this has made harder to check for uniqueness of policy name, this is then checked inside the java code.

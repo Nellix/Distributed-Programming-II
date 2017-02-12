@@ -282,12 +282,12 @@ public class NFFGTests {
 		    return;
 		}
 		if ((rr == null) && (tr == null)) {
-		    // System.out.println("No verification result to compare.");;
+		     System.out.println("No verification result to compare.");;
 		    return;
 		}
 		assertNotNull("Internal tester error: null policy referenced by verification result", rr.getPolicy());
         assertNotNull("Verification result references null policy", tr.getPolicy());
-        // System.out.println("Comparing verification result of policy "+rr.getPolicy().getName());
+        System.out.println("Comparing verification result of policy "+rr.getPolicy().getName());
         compareString(rr.getPolicy().getName(),tr.getPolicy().getName(), "policy name");
         assertTrue("Wrong result",rr.getVerificationResult().equals(tr.getVerificationResult()));
         compareString(rr.getVerificationResultMsg(), tr.getVerificationResultMsg(), "verification result message");

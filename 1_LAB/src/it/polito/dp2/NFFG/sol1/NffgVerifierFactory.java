@@ -22,6 +22,9 @@ public class NffgVerifierFactory extends it.polito.dp2.NFFG.NffgVerifierFactory{
 	public NffgVerifier newNffgVerifier() throws NffgVerifierException {
 		// TODO Auto-generated method stub
 		String file = System.getProperty("it.polito.dp2.NFFG.sol1.NffgInfo.file");
+		if(file == null)
+			throw new NffgVerifierException("Name file null");
+		
 		NffgVerifierExt verifier ;
 		
 		try {
@@ -34,6 +37,8 @@ public class NffgVerifierFactory extends it.polito.dp2.NFFG.NffgVerifierFactory{
 			u.setSchema(schema);
 
 			File xml = new File(file);
+			
+			
 			JAXBElement<NffgServiceType> nv = u.unmarshal(new StreamSource(xml), NffgServiceType.class);
 			NffgServiceType verifierType = nv.getValue();
 
