@@ -134,7 +134,7 @@ public class NffgInfoSerializer {
 			
 			nffg.setNodes(CopyNodes(nf.getNodes()));
 			
-			nffg.setPolicies(CopyPolicies(nffg.getPolicies()));
+			nffg.setPolicies(CopyPolicies(nf.getName()));
 			
 			nffglist.add(nffg);
 		}
@@ -143,14 +143,14 @@ public class NffgInfoSerializer {
 	}
 
 
-	private Policies CopyPolicies(Policies policies) {
+	private Policies CopyPolicies(String string) {
 		// TODO Auto-generated method stub
 		
 		NffgType.Policies polis = new NffgType.Policies();
 		List<ReachabilityPolicyType> Rpolicylist = polis.getReachabilityPolicy();
 		List<TraversalPolicyType> Tpolicylist = polis.getTraversalPolicy();
 		
-		for(PolicyReader p : verifier.getPolicies())
+		for(PolicyReader p : verifier.getPolicies(string))
 		{
 			ReachabilityPolicyReader rp = (ReachabilityPolicyReader)p;
 			

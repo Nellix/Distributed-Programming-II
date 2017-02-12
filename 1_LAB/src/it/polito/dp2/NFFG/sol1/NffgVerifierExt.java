@@ -9,6 +9,8 @@ import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.PolicyReader;
 import it.polito.dp2.NFFG.sol1.jaxb.NffgServiceType;
 import it.polito.dp2.NFFG.sol1.jaxb.NffgType;
+import it.polito.dp2.NFFG.sol1.jaxb.ReachabilityPolicyType;
+import it.polito.dp2.NFFG.sol1.jaxb.TraversalPolicyType;
 
 public class NffgVerifierExt implements it.polito.dp2.NFFG.NffgVerifier{
 
@@ -30,12 +32,27 @@ public class NffgVerifierExt implements it.polito.dp2.NFFG.NffgVerifier{
 		// TODO Auto-generated method stub
 		NffgServiceType.Nffgs Nffgs = new NffgServiceType.Nffgs();
 		Nffgs = verifier.getNffgs();
-			
 		
 		for(NffgType n : Nffgs.getNffg())
 		{
-			nffgs.add(new NffgReaderExt(n));
+			NffgReaderExt nr = new NffgReaderExt(n);
+			nffgs.add(nr);
+			System.out.println("ADD nffg");
+			for(ReachabilityPolicyType p : n.getPolicies().getReachabilityPolicy())
+				if (this.getPolicies(p.getName()) != null) {
+					throw new NffgVerifierException("Duplicated Policy Name");
+				}else
+					policies.add(new ReachabilityPolicyReaderExt(p,nr));
+			
+			for(TraversalPolicyType p : n.getPolicies().getTraversalPolicy())
+				if (this.getPolicies(p.getName()) != null) {
+					throw new NffgVerifierException("Duplicated Policy Name");
+				}else
+					policies.add(new TraversalPolicyReaderExt(p,nr));
 		}
+		
+		
+		
 	}
 
 	@Override
@@ -56,19 +73,40 @@ public class NffgVerifierExt implements it.polito.dp2.NFFG.NffgVerifier{
 	@Override
 	public Set<PolicyReader> getPolicies() {
 		// TODO Auto-generated method stub
-		return null;
+		if(policies.size()!=0)
+			return policies;
+		else
+			return null;
 	}
 
 	@Override
 	public Set<PolicyReader> getPolicies(String arg0) {
 		// TODO Auto-generated method stub
-		return null;
-	}
+		Set<PolicyReader> policy = new HashSet<>();
+		
+			for(PolicyReader p : policies)
+				if(p.getNffg().getName().equals(arg0))
+					policy.add(p);
+			
+			if(policy.size()!=0)
+				return policies;
+			else
+				return null;
+		}
 
 	@Override
 	public Set<PolicyReader> getPolicies(Calendar arg0) {
 		// TODO Auto-generated method stub
-		return null;
-	}
+		Set<PolicyReader> policy = new HashSet<>();
+		
+		for(PolicyReader p : policies)
+			if(p.getResult().getVerificationTime().equals(arg0))
+				policy.add(p);
+		
 
+		if(policy.size()!=0)
+			return policies;
+		else
+			return null;
+	}
 }
