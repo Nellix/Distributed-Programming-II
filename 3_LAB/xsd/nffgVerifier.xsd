@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="utf-8" ?>
+<schema xmlns:tns="http://www.example.org/nffgInfo"
+		   elementFormDefault="qualified" targetNamespace="http://www.example.org/nffgVerifier"
+		     xmlns="http://www.w3.org/2001/XMLSchema"> 
+	<import schemaLocation="nffgInfo.xsd"
+			   namespace="http://www.example.org/nffgInfo"/>
+	
+	
+<element name="Nffg" type="tns:NffgType"></element>
+<element name="Node" type="tns:NodeType"></element>
+<element name="Policy" type="tns:PolicyType"></element>
+<element name="ReachabilityPolicy" type="tns:ReachabilityPolicyType"></element>
+<element name="TraversalPolicy" type="tns:TraversalPolicyType"></element>
+<element name="Link" type="tns:LinkType"></element>
+
+
+	
+</schema>
