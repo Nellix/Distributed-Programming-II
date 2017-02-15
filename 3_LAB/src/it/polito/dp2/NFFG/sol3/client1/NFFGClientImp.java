@@ -14,10 +14,10 @@ import it.polito.dp2.NFFG.lab3.AlreadyLoadedException;
 import it.polito.dp2.NFFG.lab3.NFFGClient;
 import it.polito.dp2.NFFG.lab3.ServiceException;
 import it.polito.dp2.NFFG.lab3.UnknownNameException;
-import it.polito.dp2.NFFG.sol3.client1.data.NffgInfoSerializer;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgServiceType;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgType;
 import it.polito.dp2.NFFG.sol3.jaxb.ObjectFactory;
+import it.polito.dp2.NFFG.sol3.service.data.NffgInfoSerializer;
 
 public class NFFGClientImp implements NFFGClient {
 	
@@ -30,6 +30,7 @@ public class NFFGClientImp implements NFFGClient {
 		
 		this.target = target;
 		this.serializer = serializer;
+		this.object = new ObjectFactory();
 	}
 
 	@Override
@@ -70,8 +71,11 @@ public class NFFGClientImp implements NFFGClient {
 	@Override
 	public void loadAll() throws AlreadyLoadedException, ServiceException {
 		// TODO Auto-generated method stub
+		
+		System.out.println("#nffg : "+ serializer.getServiceJAXB().getNffgs().getNffg().size());
 		JAXBElement<NffgServiceType> xml =  object.createNffgService(serializer.getServiceJAXB());
 		
+		System.out.println("#NFFG : "+xml.getValue().getNffgs().getNffg().size());
 		try{
 		 
 			NffgServiceType response = target.path("Nffgs/")

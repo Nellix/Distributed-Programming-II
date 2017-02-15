@@ -12,7 +12,7 @@ import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.NffgVerifierFactory;
 import it.polito.dp2.NFFG.lab3.NFFGClient;
 import it.polito.dp2.NFFG.lab3.NFFGClientException;
-import it.polito.dp2.NFFG.sol3.client1.data.NffgInfoSerializer;
+import it.polito.dp2.NFFG.sol3.service.data.NffgInfoSerializer;
 
 
 public class NFFGClientFactory extends it.polito.dp2.NFFG.lab3.NFFGClientFactory{
