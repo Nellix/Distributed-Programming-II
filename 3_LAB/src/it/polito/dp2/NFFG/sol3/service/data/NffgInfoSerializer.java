@@ -1,16 +1,12 @@
 package it.polito.dp2.NFFG.sol3.service.data;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -31,10 +27,10 @@ import it.polito.dp2.NFFG.sol3.jaxb.NffgServiceType;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgServiceType.Nffgs;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgType;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgType.Nodes;
-import it.polito.dp2.NFFG.sol3.jaxb.NffgType.Policies;
 import it.polito.dp2.NFFG.sol3.jaxb.NodeType;
 import it.polito.dp2.NFFG.sol3.jaxb.NodeType.Links;
 import it.polito.dp2.NFFG.sol3.jaxb.ObjectFactory;
+import it.polito.dp2.NFFG.sol3.jaxb.PoliciesType;
 import it.polito.dp2.NFFG.sol3.jaxb.ReachabilityPolicyType;
 import it.polito.dp2.NFFG.sol3.jaxb.TraversalPolicyType;
 import it.polito.dp2.NFFG.sol3.jaxb.VerificationResultType;
@@ -56,8 +52,6 @@ public class NffgInfoSerializer {
 		
 	}
 
-	
-	
 
 	private void CopyAll() {
 		// TODO Auto-generated method stub
@@ -88,21 +82,21 @@ public class NffgInfoSerializer {
 	}
 
 
-	private Policies CopyPolicies(String string) {
+	private PoliciesType CopyPolicies(String string) {
 		// TODO Auto-generated method stub
 		
-		NffgType.Policies polis = new NffgType.Policies();
+		PoliciesType polis = new PoliciesType(); 
 		List<ReachabilityPolicyType> Rpolicylist = polis.getReachabilityPolicy();
 		List<TraversalPolicyType> Tpolicylist = polis.getTraversalPolicy();
 		
 		for(PolicyReader p : verifier.getPolicies(string))
 		{
-			ReachabilityPolicyReader rp = (ReachabilityPolicyReader)p;
+	//ReachabilityPolicyReader rp = (ReachabilityPolicyReader)p;
 			
-			NameEntityType dst = new NameEntityType();
-			dst.setName(rp.getDestinationNode().getName());
-			NameEntityType src = new NameEntityType();
-			src.setName(rp.getSourceNode().getName());
+		
+
+	//		NffgTypeExt nffg = new NffgTypeExt(rp.getNffg());
+			String nffg = p.getNffg().getName();
 	
 			VerificationResultType v = null;
 			if(p.getResult()!=null)
@@ -113,16 +107,22 @@ public class NffgInfoSerializer {
 				v.setVerificationTime(convertToXMLCalendar(p.getResult().getVerificationTime()));
 			}
 			
-			if(rp instanceof TraversalPolicyReader)
+			if(p instanceof TraversalPolicyReader)
 			{
 				TraversalPolicyReader t = (TraversalPolicyReader)p;
 				TraversalPolicyType tr = new TraversalPolicyType();
 				
+				NameEntityType dst = new NameEntityType();
+				dst.setName(((TraversalPolicyReader)p).getDestinationNode().getName());
+				NameEntityType src = new NameEntityType();
+				src.setName(((TraversalPolicyReader)p).getSourceNode().getName());
+
 				tr.setName(t.getName());
 				tr.setDstNode(dst);
 				tr.setSrcNode(src);
 				tr.setPolicyResult(t.isPositive());
 				tr.setVerificationResult(v);
+			
 			
 				TraversalPolicyType.TraversedFTypes types = new TraversalPolicyType.TraversedFTypes();
 				
@@ -134,24 +134,33 @@ public class NffgInfoSerializer {
 				}
 				
 				tr.setTraversedFTypes(types);
+			
+				tr.setNffg(nffg);
 				
 				Tpolicylist.add(tr);
-				System.out.println("[Serializer] Aggiunta Traversal policy");
+				//System.out.println("[Serializer] Aggiunta Traversal policy");
 
 				
-			}else if(rp instanceof ReachabilityPolicyReader)
+			}else if(p instanceof ReachabilityPolicyReader)
 			{
 				ReachabilityPolicyType reach = new ReachabilityPolicyType();
+				NameEntityType dst = new NameEntityType();
+				dst.setName(((ReachabilityPolicyReader)p).getDestinationNode().getName());
+				NameEntityType src = new NameEntityType();
+				src.setName(((ReachabilityPolicyReader)p).getSourceNode().getName());
 				
-				reach.setName(rp.getName());
-				reach.setDstNode(dst);
-				reach.setPolicyResult(rp.isPositive());
-				reach.setSrcNode(src);
+				reach.setName(p.getName());
+
+				reach.setPolicyResult(p.isPositive());
+
 				reach.setVerificationResult(v);
+				reach.setNffg(nffg);
+				reach.setDstNode(dst);
+				reach.setSrcNode(src);
 				
 				Rpolicylist.add(reach);
 				
-				System.out.println("[Serializer] Aggiunta Reachability policy");
+		//		System.out.println("[Serializer] Aggiunta Reachability policy");
 			}
 			
 		}
@@ -204,7 +213,7 @@ public class NffgInfoSerializer {
 	}
 
 
-	public XMLGregorianCalendar convertToXMLCalendar(Calendar c) {
+	public static XMLGregorianCalendar convertToXMLCalendar(Calendar c) {
 		XMLGregorianCalendar calendar;
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(c.getTime());

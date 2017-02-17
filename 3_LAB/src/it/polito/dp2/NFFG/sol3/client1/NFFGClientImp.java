@@ -6,17 +6,20 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBElement;
 
-import com.sun.research.ws.wadl.Response;
 
-import it.polito.dp2.NFFG.NffgReader;
-import it.polito.dp2.NFFG.NffgVerifier;
+
 import it.polito.dp2.NFFG.lab3.AlreadyLoadedException;
 import it.polito.dp2.NFFG.lab3.NFFGClient;
+import it.polito.dp2.NFFG.lab3.NFFGClientException;
 import it.polito.dp2.NFFG.lab3.ServiceException;
+//import it.polito.dp2.NFFG.lab3.ServiceException;
 import it.polito.dp2.NFFG.lab3.UnknownNameException;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgServiceType;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgType;
 import it.polito.dp2.NFFG.sol3.jaxb.ObjectFactory;
+import it.polito.dp2.NFFG.sol3.jaxb.PolicyType;
+import it.polito.dp2.NFFG.sol3.jaxb.ReachabilityPolicyType;
+import it.polito.dp2.NFFG.sol3.jaxb.VerificationResultType;
 import it.polito.dp2.NFFG.sol3.service.data.NffgInfoSerializer;
 
 public class NFFGClientImp implements NFFGClient {
@@ -46,7 +49,7 @@ public class NFFGClientImp implements NFFGClient {
 		
 		try{
 		 
-		NffgType response = target.path("Nffgs/"+name)
+				target.path("Nffgs/"+name)
                 .request(MediaType.APPLICATION_XML)
                 .post(Entity.entity(xml,MediaType.APPLICATION_XML),NffgType.class);
   
@@ -57,28 +60,35 @@ public class NFFGClientImp implements NFFGClient {
 			if (ex.getResponse().getStatus() == 403)
 				throw new AlreadyLoadedException("Nffg already loaded in the service", ex);
 			if (ex.getResponse().getStatus() == 400)
-				throw new ServiceException("Nffg malformed", ex);
+					throw new ServiceException("Nffg malformed", ex);				
 			else
-				throw new ServiceException("Nffg not loaded, something went wrong", ex);
-	
+					throw new ServiceException("Nffg not loaded, something went wrong", ex);	
 	  	} catch (Exception ex) {
-	  		
-			throw new ServiceException("An error occured during the loading of the nffg", ex);
-		}
-		
-	}
+				throw new ServiceException("An error occured during the loading of the nffg", ex);		
+	}	
+}
 
 	@Override
 	public void loadAll() throws AlreadyLoadedException, ServiceException {
 		// TODO Auto-generated method stub
 		
-		System.out.println("#nffg : "+ serializer.getServiceJAXB().getNffgs().getNffg().size());
 		JAXBElement<NffgServiceType> xml =  object.createNffgService(serializer.getServiceJAXB());
 		
+//		
+		if(xml==null)
+			try {
+				throw new NFFGClientException("[CLIENT1] No data to load ");
+			} catch (NFFGClientException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		
 		System.out.println("#NFFG : "+xml.getValue().getNffgs().getNffg().size());
+		
 		try{
 		 
-			NffgServiceType response = target.path("Nffgs/")
+			target.path("Nffgs/")
 					.request(MediaType.APPLICATION_XML)
 					.post(Entity.entity(xml,MediaType.APPLICATION_XML),NffgServiceType.class);
   
@@ -86,36 +96,98 @@ public class NFFGClientImp implements NFFGClient {
 		
 	  	}catch (WebApplicationException ex) {
 	  		
-			if (ex.getResponse().getStatus() == 403)
+	  		if (ex.getResponse().getStatus() == 403)
 				throw new AlreadyLoadedException("Nffg already loaded in the service", ex);
 			if (ex.getResponse().getStatus() == 400)
-				throw new ServiceException("Nffg malformed", ex);
+					throw new ServiceException("Nffg malformed", ex);				
 			else
-				throw new ServiceException("Nffg not loaded, something went wrong", ex);
-	
+					throw new ServiceException("Nffg not loaded, something went wrong", ex);	
 	  	} catch (Exception ex) {
-	  		
-			throw new ServiceException("An error occured during the loading of the nffg", ex);
-		}
-	}
+				throw new ServiceException("An error occured during the loading of the nffg", ex);		
+	  		}	
+	  	
+}
 
 	@Override
 	public void loadReachabilityPolicy(String name, String nffgName, boolean isPositive, String srcNodeName,
 			String dstNodeName) throws UnknownNameException, ServiceException {
 		// TODO Auto-generated method stub
-
+		
+		ReachabilityPolicyType policy = ClientFunc.createRechabilityPolicy(name,nffgName,isPositive,srcNodeName,dstNodeName);
+		
+		JAXBElement<ReachabilityPolicyType> xml = object.createReachabilityPolicy(policy);
+		
+		try {
+			target.path("Policies")
+					.path(name)
+					.request(MediaType.APPLICATION_XML)
+					.post(Entity.entity(xml, MediaType.APPLICATION_XML), ReachabilityPolicyType.class);
+		
+		} catch (WebApplicationException ex) {
+			if (ex.getResponse().getStatus() == 404)
+				throw new UnknownNameException("The nffg \"" + nffgName + "\" is not loaded in the service", ex);
+			if (ex.getResponse().getStatus() == 400)
+					throw new ServiceException("Policy malformed", ex);
+			else
+					throw new ServiceException("Policy not loaded, something went wrong", ex);
+		} catch (Exception ex) {
+				throw new ServiceException("An error occured during the loading of the policy", ex);
+	}
+		
 	}
 
 	@Override
 	public void unloadReachabilityPolicy(String name) throws UnknownNameException, ServiceException {
 		// TODO Auto-generated method stub
 
+		try {
+			target.path("Policies")
+					.path(name)
+					.request(MediaType.APPLICATION_XML)
+					.delete(PolicyType.class);
+		} catch (WebApplicationException ex) {
+			if (ex.getResponse().getStatus() == 404)
+				throw new UnknownNameException("The Policy \"" + name + "\" is not loaded in the service", ex);
+			else
+					throw new ServiceException("Policy not unloaded, something went wrong", ex);
+				} catch (Exception ex) {
+				throw new ServiceException("An error occured during the unloading of the policy", ex);
+			}
 	}
 
 	@Override
 	public boolean testReachabilityPolicy(String name) throws UnknownNameException, ServiceException {
 		// TODO Auto-generated method stub
-		return false;
+		VerificationResultType result = null;
+		
+		try {
+		
+			result = target.path("Policies")
+										.path(name)
+										.path("verificationResult")
+										.request(MediaType.APPLICATION_XML)
+										.post(null,VerificationResultType.class);
+		} catch (WebApplicationException ex) {
+			if (ex.getResponse().getStatus() == 404)
+				throw new UnknownNameException("The Policy \"" + name + "\" is not loaded in the service", ex);
+			else
+					throw new ServiceException("Policy not unloaded, something went wrong", ex);
+		} catch (Exception ex) {
+				throw new ServiceException("An error occured during the testing  the policy", ex);
+}
+				
+		if(result.isVerificationResult())
+		{
+			System.out.println(name+" verificated: REACHABILITY");
+			return true;
+		}
+			
+		else
+		{
+			System.out.println(name+" verificated: NOT REACHABILITY");
+			return false;
+		}
+		
 	}
 
 }

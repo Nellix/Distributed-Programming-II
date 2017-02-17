@@ -1,30 +1,32 @@
 package it.polito.dp2.NFFG.sol3.service;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.NotFoundException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import it.polito.dp2.NFFG.PolicyReader;
-import it.polito.dp2.NFFG.lab2.ServiceException;
-import it.polito.dp2.NFFG.lab2.UnknownNameException;
+import it.polito.dp2.NFFG.NffgVerifierException;
+import it.polito.dp2.NFFG.lab2.NoGraphException;
+import it.polito.dp2.NFFG.lab3.ServiceException;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgServiceType;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgServiceType.Nffgs;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgType;
-import it.polito.dp2.NFFG.sol3.jaxb.ObjectFactory;
+import it.polito.dp2.NFFG.sol3.jaxb.PoliciesType;
 import it.polito.dp2.NFFG.sol3.jaxb.PolicyType;
 import it.polito.dp2.NFFG.sol3.jaxb.ReachabilityPolicyType;
 import it.polito.dp2.NFFG.sol3.jaxb.TraversalPolicyType;
+import it.polito.dp2.NFFG.sol3.jaxb.VerificationResultType;
 import it.polito.dp2.NFFG.sol3.service.neo4j.NEO4JService;
+
+//import it.polito.dp2.NFFG.sol3.service.ServiceException;
 
 
 public class NFFGSService {
@@ -40,11 +42,11 @@ public class NFFGSService {
 	}
 
 	
-	public void loadNffgService(NffgServiceType nffgservice) throws it.polito.dp2.NFFG.sol3.service.ServiceException    {
+	public void loadNffgService(NffgServiceType nffgservice) throws  NffgVerifierException, ServiceException    {
 		// TODO Auto-generated method stub
 				
 		NffgServiceType.Nffgs nffgs = nffgservice.getNffgs();
-		NffgType.Policies policies = new NffgType.Policies();
+		PoliciesType policies = new PoliciesType();
 	
 		for(NffgType n : nffgs.getNffg())
 		{
@@ -66,9 +68,8 @@ public class NFFGSService {
 				}
 			}
 		
-			synchronized(mapNffg){
 				addNffg(n);
-			}
+			
 			System.out.println("[SERVICE] Added new nffg");
 			neo4j.loadNFFG(n);
 		}
@@ -77,27 +78,40 @@ public class NFFGSService {
 	}
 
 
-	private void addNffg(NffgType n) {
+	private void addNffg(NffgType n) throws NffgVerifierException  {
 		// TODO Auto-generated method stub
-		
-		mapNffg.put(n.getName(),n);
-		
+		if(mapNffg.containsKey(n.getName()))
+			throw new NffgVerifierException("Nffg already present");
+		else
+		{
+			mapNffg.put(n.getName(),n);
+			System.out.println("ADDEDD "+n.getName());
+		}
 	}
 
 
-	private void addTraversalPolicy(Object p) {
+	private void addTraversalPolicy(Object p) throws NffgVerifierException {
 		// TODO Auto-generated method stub
-		
-		mapPolicy.put(((TraversalPolicyType)p).getName(),((TraversalPolicyType)p));
-
+		if(mapPolicy.containsKey(((TraversalPolicyType)p).getName()))
+			throw new NffgVerifierException("Policy already present");
+		else
+		{
+			System.out.println("ADDEDD policy T");
+			mapPolicy.put(((TraversalPolicyType)p).getName(),((TraversalPolicyType)p));
+		}
 	}
 
 
-	private void addReachabilityPolicy(Object p) {
+	private void addReachabilityPolicy(Object p) throws NffgVerifierException {
 		// TODO Auto-generated method stub
 		
-		mapPolicy.put(((ReachabilityPolicyType)p).getName(),((ReachabilityPolicyType)p));
-		
+		if(mapPolicy.containsKey(((ReachabilityPolicyType)p).getName()))
+			throw new NffgVerifierException("Policy already present");
+		else
+		{
+			mapPolicy.put(((ReachabilityPolicyType)p).getName(),((ReachabilityPolicyType)p));
+			System.out.println("ADDEDD R policy");
+		}
 	}
 
 
@@ -107,10 +121,10 @@ public class NFFGSService {
 	}
 
 
-	public NffgType loadSingleNffg(NffgType n) throws it.polito.dp2.NFFG.sol3.service.ServiceException {
+	public NffgType loadSingleNffg(NffgType n) throws NffgVerifierException, ServiceException {
 		// TODO Auto-generated method stub
 		if(mapNffg.containsKey(n.getName()))
-			return null; 
+			throw new NffgVerifierException(); 
 		else
 		{
 			mapNffg.put(n.getName(), n);
@@ -135,6 +149,97 @@ public class NFFGSService {
 		
 
 		
+	}
+
+
+	public 	Map <String,PolicyType> getMapPolicy() {
+		// TODO Auto-generated method stub
+		return mapPolicy;
+	}
+
+
+	public void loadSinglePolicy(ReachabilityPolicyType reachabilityPolicyType) throws NffgVerifierException {
+		// TODO Auto-generated method stub
+		
+			if(mapPolicy.containsKey(reachabilityPolicyType.getName()))
+				throw new NffgVerifierException("Policy already present in the service");
+			else
+			{
+				//System.out.println("[SERVICE] Policy Added");
+				mapPolicy.put(reachabilityPolicyType.getName(), reachabilityPolicyType);
+			}		
+	}
+
+
+	public PoliciesType getALLPolicies() {
+		// TODO Auto-generated method stub
+		
+		Collection<PolicyType> c = mapPolicy.values();
+		PoliciesType polis = new PoliciesType();
+		
+		for(PolicyType p : c)
+		{
+			if(p instanceof TraversalPolicyType)
+				polis.getTraversalPolicy().add((TraversalPolicyType)p);
+			else
+				polis.getReachabilityPolicy().add((ReachabilityPolicyType)p);
+		}
+			
+		return polis;
+	}
+
+
+	public PolicyType deletePolicy(String policyName) {
+		// TODO Auto-generated method stub
+		return mapPolicy.remove(policyName);
+	}
+
+
+	public VerificationResultType testReachabilityPolicy(String name) throws NoGraphException, ServiceException {
+		// TODO Auto-generated method stub
+			PolicyType p = mapPolicy.get(name);
+			
+			boolean result = neo4j.testReachability(p);
+			
+			VerificationResultType r = new VerificationResultType();
+			r.setVerificationResult(result);
+			r.setVerificationMessage("Policy verification result : "+result);
+			
+			XMLGregorianCalendar calendar;
+			GregorianCalendar gc = new GregorianCalendar();
+			Calendar c = new GregorianCalendar();
+			gc.setTime(c.getTime());
+			gc.setTimeZone(c.getTimeZone());
+			try {
+				calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
+			} catch (DatatypeConfigurationException e) {
+				throw new Error(e);
+			}
+			
+			r.setVerificationTime(calendar);
+			System.out.println("[SERVICE] Tested "+p.getName()+" at time "+r.getVerificationTime());
+			p.setVerificationResult(r);
+			mapPolicy.replace(p.getName(),p);
+				
+		return r;
+	}
+
+
+	public PoliciesType getPoliciesofNffg(String name) {
+		// TODO Auto-generated method stub
+		Collection<PolicyType> c = mapPolicy.values();
+		PoliciesType polis = new PoliciesType();
+		
+		for(PolicyType p : c)
+		{
+			if(p.getNffg().compareTo(name)==0)
+				if(p instanceof TraversalPolicyType)
+					polis.getTraversalPolicy().add((TraversalPolicyType)p);
+				else
+					polis.getReachabilityPolicy().add((ReachabilityPolicyType)p);
+		}
+			
+		return polis;
 	}
 	
 	

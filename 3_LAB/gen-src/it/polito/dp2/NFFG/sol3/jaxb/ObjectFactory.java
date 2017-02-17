@@ -2,7 +2,7 @@
 // Questo file è stato generato dall'architettura JavaTM per XML Binding (JAXB) Reference Implementation, v2.2.8-b130911.1802 
 // Vedere <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Qualsiasi modifica a questo file andrà persa durante la ricompilazione dello schema di origine. 
-// Generato il: 2017.02.15 alle 04:38:28 PM CET 
+// Generato il: 2017.02.17 alle 07:41:09 PM CET 
 //
 
 
@@ -37,6 +37,8 @@ public class ObjectFactory {
     private final static QName _ReachabilityPolicy_QNAME = new QName("http://www.example.org/nffgVerifier", "ReachabilityPolicy");
     private final static QName _Link_QNAME = new QName("http://www.example.org/nffgVerifier", "Link");
     private final static QName _Policy_QNAME = new QName("http://www.example.org/nffgVerifier", "Policy");
+    private final static QName _Policies_QNAME = new QName("http://www.example.org/nffgVerifier", "Policies");
+    private final static QName _VerificationResult_QNAME = new QName("http://www.example.org/nffgVerifier", "VerificationResult");
     private final static QName _Node_QNAME = new QName("http://www.example.org/nffgVerifier", "Node");
 
     /**
@@ -87,6 +89,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link PoliciesType }
+     * 
+     */
+    public PoliciesType createPoliciesType() {
+        return new PoliciesType();
+    }
+
+    /**
+     * Create an instance of {@link VerificationResultType }
+     * 
+     */
+    public VerificationResultType createVerificationResultType() {
+        return new VerificationResultType();
+    }
+
+    /**
      * Create an instance of {@link LinkType }
      * 
      */
@@ -100,14 +118,6 @@ public class ObjectFactory {
      */
     public ReachabilityPolicyType createReachabilityPolicyType() {
         return new ReachabilityPolicyType();
-    }
-
-    /**
-     * Create an instance of {@link VerificationResultType }
-     * 
-     */
-    public VerificationResultType createVerificationResultType() {
-        return new VerificationResultType();
     }
 
     /**
@@ -140,14 +150,6 @@ public class ObjectFactory {
      */
     public NffgType.Nodes createNffgTypeNodes() {
         return new NffgType.Nodes();
-    }
-
-    /**
-     * Create an instance of {@link NffgType.Policies }
-     * 
-     */
-    public NffgType.Policies createNffgTypePolicies() {
-        return new NffgType.Policies();
     }
 
     /**
@@ -210,6 +212,24 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.example.org/nffgVerifier", name = "Policy")
     public JAXBElement<PolicyType> createPolicy(PolicyType value) {
         return new JAXBElement<PolicyType>(_Policy_QNAME, PolicyType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link PoliciesType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.example.org/nffgVerifier", name = "Policies")
+    public JAXBElement<PoliciesType> createPolicies(PoliciesType value) {
+        return new JAXBElement<PoliciesType>(_Policies_QNAME, PoliciesType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link VerificationResultType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.example.org/nffgVerifier", name = "VerificationResult")
+    public JAXBElement<VerificationResultType> createVerificationResult(VerificationResultType value) {
+        return new JAXBElement<VerificationResultType>(_VerificationResult_QNAME, VerificationResultType.class, null, value);
     }
 
     /**

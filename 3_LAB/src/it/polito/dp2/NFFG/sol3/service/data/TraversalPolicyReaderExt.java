@@ -20,6 +20,8 @@ public class TraversalPolicyReaderExt extends PolicyReaderExt implements Travers
 		init();
 	}
 
+
+
 	private void init() {
 		// TODO Auto-generated method stub
 		this.ft=new HashSet<FunctionalType>();

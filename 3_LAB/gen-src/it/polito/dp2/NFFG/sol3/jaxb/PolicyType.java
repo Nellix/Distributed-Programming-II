@@ -2,7 +2,7 @@
 // Questo file è stato generato dall'architettura JavaTM per XML Binding (JAXB) Reference Implementation, v2.2.8-b130911.1802 
 // Vedere <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Qualsiasi modifica a questo file andrà persa durante la ricompilazione dello schema di origine. 
-// Generato il: 2017.02.15 alle 04:38:28 PM CET 
+// Generato il: 2017.02.17 alle 07:41:09 PM CET 
 //
 
 
@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;extension base="{http://www.example.org/nffgInfo}nameEntityType">
  *       &lt;sequence>
  *         &lt;element name="VerificationResult" type="{http://www.example.org/nffgInfo}VerificationResultType" minOccurs="0"/>
+ *         &lt;element name="Nffg" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *       &lt;attribute name="PolicyResult" use="required" type="{http://www.w3.org/2001/XMLSchema}boolean" />
  *     &lt;/extension>
@@ -38,7 +39,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PolicyType", propOrder = {
-    "verificationResult"
+    "verificationResult",
+    "nffg"
 })
 @XmlSeeAlso({
     ReachabilityPolicyType.class
@@ -49,6 +51,8 @@ public class PolicyType
 
     @XmlElement(name = "VerificationResult")
     protected VerificationResultType verificationResult;
+    @XmlElement(name = "Nffg", required = true)
+    protected String nffg;
     @XmlAttribute(name = "PolicyResult", required = true)
     protected boolean policyResult;
 
@@ -74,6 +78,30 @@ public class PolicyType
      */
     public void setVerificationResult(VerificationResultType value) {
         this.verificationResult = value;
+    }
+
+    /**
+     * Recupera il valore della proprietà nffg.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getNffg() {
+        return nffg;
+    }
+
+    /**
+     * Imposta il valore della proprietà nffg.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setNffg(String value) {
+        this.nffg = value;
     }
 
     /**

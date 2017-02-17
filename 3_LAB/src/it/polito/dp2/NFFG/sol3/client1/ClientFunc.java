@@ -1,10 +1,11 @@
 package it.polito.dp2.NFFG.sol3.client1;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+
+import it.polito.dp2.NFFG.sol3.jaxb.NameEntityType;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgType;
+import it.polito.dp2.NFFG.sol3.jaxb.ReachabilityPolicyType;
 
 public class ClientFunc {
 
@@ -18,6 +19,26 @@ public class ClientFunc {
 		 }
 		
 		return null;
+	}
+
+	public static ReachabilityPolicyType createRechabilityPolicy(String name, String nffgName, boolean isPositive,
+			String srcNodeName, String dstNodeName) {
+		// TODO Auto-generated method stub
+		ReachabilityPolicyType policy = new ReachabilityPolicyType();
+		policy.setName(name);
+		policy.setPolicyResult(isPositive);
+		NameEntityType src = new NameEntityType();
+		src.setName(srcNodeName);
+		NameEntityType dest = new NameEntityType();
+		dest.setName(dstNodeName);
+		policy.setSrcNode(dest);
+	//	NffgTypeExt nffg = new NffgTypeExt();
+	//	nffg.setName(nffgName);
+		dest.setName(nffgName);
+	
+		policy.setNffg(nffgName);
+		
+		return policy;
 	}
 
 }

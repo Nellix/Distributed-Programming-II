@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
@@ -14,7 +13,11 @@ import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.PolicyReader;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgServiceType;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgType;
+import it.polito.dp2.NFFG.sol3.jaxb.PoliciesType;
+import it.polito.dp2.NFFG.sol3.jaxb.PolicyType;
 import it.polito.dp2.NFFG.sol3.service.data.NffgReaderExt;
+import it.polito.dp2.NFFG.sol3.service.data.PolicyReaderExt;
+
 
 
 public class NffgVerifierImpl implements it.polito.dp2.NFFG.NffgVerifier{
@@ -49,15 +52,11 @@ public class NffgVerifierImpl implements it.polito.dp2.NFFG.NffgVerifier{
 	    	} catch (NffgVerifierException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			 
-		    		System.out.println("[CLIENT2] Scarico nffg "+nffg.getName()+"dal server");
-		   
+			} 
+		    		System.out.println("[CLIENT2] Scarico nffg "+nffg.getName()+"dal server");   
 		    		return n;
 		}
-		
-		
-	}
+}
 
 	@Override
 	public Set<NffgReader> getNffgs(){
@@ -70,7 +69,6 @@ public class NffgVerifierImpl implements it.polito.dp2.NFFG.NffgVerifier{
 	    	NffgServiceType nffgs = target.path("Nffgs/")
 	    						.request().accept(MediaType.APPLICATION_XML)
 	    						.get(NffgServiceType.class);
-
 	    	
 	    	NffgServiceType.Nffgs Nffgs = new NffgServiceType.Nffgs ();
 	    	Nffgs = nffgs.getNffgs();
@@ -86,16 +84,98 @@ public class NffgVerifierImpl implements it.polito.dp2.NFFG.NffgVerifier{
 		return NffgSet;
 	}
 
+	
 	@Override
 	public Set<PolicyReader> getPolicies() {
 		// TODO Auto-generated method stub
-		return null;
-	}
+		PolicySet.clear();
+		
+		Set<NffgReader> set = new HashSet<>();
+		set = getNffgs();
+		
+	    System.out.println("[CLIENT2] Scarico tutte le policy dal server");
+	    
+	    PoliciesType policies = target.path("Policies/")
+	    					.request().accept(MediaType.APPLICATION_XML)
+	    					.get(PoliciesType.class);
+	
+	    System.out.println("size reach "+policies.getReachabilityPolicy().size());
+	    System.out.println("size trav "+policies.getTraversalPolicy().size());
+
+
+	    for(PolicyType p : policies.getReachabilityPolicy())
+			try {
+				
+				for(NffgReader e : set)
+				{			
+					if(e.getName().compareTo(p.getNffg())==0)
+					{
+						PolicySet.add(new PolicyReaderExt(p,e));
+
+					}
+				}
+			} catch (NffgVerifierException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+	    for(PolicyType p : policies.getTraversalPolicy())
+				try {
+				
+					for(NffgReader e : set)
+						if(e.getName().compareTo(p.getNffg())==0)
+						{
+							PolicySet.add(new PolicyReaderExt(p,e));
+						}
+					} catch (NffgVerifierException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+	    System.out.println("SIZE : "+PolicySet.size());
+	    return PolicySet;
+	    }
+	
 
 	@Override
 	public Set<PolicyReader> getPolicies(String arg0) {
 		// TODO Auto-generated method stub
-		return null;
+		NffgReader nr = null;
+		
+		for(NffgReader e : NffgSet)
+			if(e.getName().compareTo(arg0)==0)
+				 nr = e;
+		
+		Set<PolicyReader> set =  new CopyOnWriteArraySet<>();
+		
+	    System.out.println("[CLIENT2] Scarico tutte le policy di "+arg0);
+	    
+	    PoliciesType policies = target.path("Policies")
+	    					.path("Nffgs")
+	    					.path(arg0)
+	    					.request().accept(MediaType.APPLICATION_XML)
+	    					.get(PoliciesType.class);
+	
+	    
+	    for(PolicyType p : policies.getReachabilityPolicy())
+			try {
+				set.add(new PolicyReaderExt(p,nr));
+			} catch (NffgVerifierException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    
+	    for(PolicyType p : policies.getTraversalPolicy())
+				try {
+					set.add(new PolicyReaderExt(p,nr));
+				} catch (NffgVerifierException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+	    return set;
+		
+	    
 	}
 
 	@Override

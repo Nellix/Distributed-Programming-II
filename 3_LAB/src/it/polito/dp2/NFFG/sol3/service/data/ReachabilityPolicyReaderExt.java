@@ -4,6 +4,7 @@ package it.polito.dp2.NFFG.sol3.service.data;
 import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.NodeReader;
 import it.polito.dp2.NFFG.ReachabilityPolicyReader;
+import it.polito.dp2.NFFG.sol3.jaxb.PolicyType;
 import it.polito.dp2.NFFG.sol3.jaxb.ReachabilityPolicyType;
 
 public class ReachabilityPolicyReaderExt extends PolicyReaderExt implements ReachabilityPolicyReader {
@@ -17,7 +18,7 @@ public class ReachabilityPolicyReaderExt extends PolicyReaderExt implements Reac
 	@Override
 	public NodeReader getDestinationNode() {
 		// TODO Auto-generated method stub
-		return nffg.getNode(((ReachabilityPolicyType)this.entity).getDstNode().getName());
+		return nffg.getNode(((ReachabilityPolicyType)this.entity).getDstNode().getName().toString());
 	}
 
 

@@ -6,7 +6,7 @@
 <!ATTLIST Nffg
 	name CDATA #REQUIRED >
 
-<!ELEMENT updateTime (#PCDATA)>
+<!ELEMENT UpdateTime (#PCDATA)>
 <!ELEMENT Nodes ((Node)*)>
 
 <!ELEMENT Node (Links)>

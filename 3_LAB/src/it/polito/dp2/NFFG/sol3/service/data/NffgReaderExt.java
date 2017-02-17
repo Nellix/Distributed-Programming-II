@@ -7,6 +7,7 @@ import java.util.Set;
 import it.polito.dp2.NFFG.NffgReader;
 import it.polito.dp2.NFFG.NffgVerifierException;
 import it.polito.dp2.NFFG.NodeReader;
+import it.polito.dp2.NFFG.sol3.jaxb.NameEntityType;
 import it.polito.dp2.NFFG.sol3.jaxb.NffgType;
 import it.polito.dp2.NFFG.sol3.jaxb.NodeType;
 
@@ -18,7 +19,7 @@ public class NffgReaderExt extends NamedEntityExt implements NffgReader{
 		// TODO Auto-generated constructor stub
 		super(n);
 		this.Nodes = new HashSet<NodeReader>();
-		
+			
 		init();
 
 	}
@@ -26,7 +27,7 @@ public class NffgReaderExt extends NamedEntityExt implements NffgReader{
 	private void init() throws NffgVerifierException {
 		// TODO Auto-generated method stub
 		NffgType.Nodes nodes = new NffgType.Nodes();
-		nodes =((NffgType)this.entity).getNodes();
+		nodes = ((NffgType)this.entity).getNodes();
 		
 		for(NodeType node : nodes.getNode())
 		{

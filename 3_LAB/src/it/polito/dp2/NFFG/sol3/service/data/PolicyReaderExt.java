@@ -9,17 +9,23 @@ import it.polito.dp2.NFFG.sol3.jaxb.PolicyType;
 
 public class PolicyReaderExt extends NamedEntityExt implements PolicyReader{
 
-	protected NffgReaderExt nffg;
+	protected NffgReader nffg;
+	protected NffgReader nffg1;
 	
-	public PolicyReaderExt(PolicyType p, NffgReaderExt nr) throws NffgVerifierException {
+	public PolicyReaderExt(PolicyType p, NffgReader e) throws NffgVerifierException {
 		// TODO Auto-generated constructor stub
 		super(p);
-		this.nffg = nr;
+		this.nffg = e;
+		this.nffg1=null;
 	}
+
+
 
 	@Override
 	public NffgReader getNffg() {
 		// TODO Auto-generated method stub
+		if(nffg==null)
+			return nffg1;
 		return nffg;
 	}
 

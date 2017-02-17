@@ -8,11 +8,12 @@
 	
 <element name="Nffg" type="tns:NffgType"></element>
 <element name="Node" type="tns:NodeType"></element>
-<element name="Policy" type="tns:PolicyType"></element>
+<element name="Policy" type="tns:PolicyType" ></element>
 <element name="ReachabilityPolicy" type="tns:ReachabilityPolicyType"></element>
 <element name="TraversalPolicy" type="tns:TraversalPolicyType"></element>
 <element name="Link" type="tns:LinkType"></element>
-
+<element name="Policies" type="tns:PoliciesType"></element>
+<element name="VerificationResult" type="tns:VerificationResultType"></element>
 
 	
 </schema>

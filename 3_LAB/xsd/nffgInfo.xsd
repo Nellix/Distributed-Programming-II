@@ -66,14 +66,7 @@
 						</sequence>
 					</complexType>
 				</element>
-				<element name="Policies">
-					<complexType>
-						<sequence>
-							<element name="ReachabilityPolicy" type="tns:ReachabilityPolicyType" minOccurs="0" maxOccurs="unbounded"></element>
-							<element name="TraversalPolicy" type="tns:TraversalPolicyType" minOccurs="0" maxOccurs="unbounded"></element>
-						</sequence>
-					</complexType>
-				</element>
+				<element name="Policies" type="tns:PoliciesType"></element>
 			</sequence>
 		</extension>
 	</complexContent>
@@ -85,6 +78,7 @@
 		<extension base="tns:nameEntityType">
 			<sequence>
 				<element name="VerificationResult" type="tns:VerificationResultType" minOccurs="0"></element>
+				<element name="Nffg" type="string" ></element>
 			</sequence>
 			<attribute name="PolicyResult" type="boolean" use="required"/>
 		</extension>
@@ -175,5 +169,11 @@
 		</restriction>
 </simpleType>
 	
+<complexType name="PoliciesType">
+	<sequence>
+		<element name="ReachabilityPolicy" type="tns:ReachabilityPolicyType" minOccurs="0" maxOccurs="unbounded"></element>
+		<element name="TraversalPolicy" type="tns:TraversalPolicyType" minOccurs="0" maxOccurs="unbounded"></element>
+	</sequence>
+</complexType>
 	
 </schema>
