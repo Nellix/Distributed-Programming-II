@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="sol_build" default="build-service" basedir=".">
+    <description>
+        Script for building NFFG Assignment 3
+    </description>
+    <property name="schema.dir" location="${basedir}/xsd"/>
+    <property name="gen.dir" location="${basedir}/gen-src"/>
+    
+    <property name="serviceName" value="NffgService"/>
+    <property name="servicePath.prefix" value="it/polito/dp2/NFFG/sol3/service"/>
+    <property name="serviceJaxrsPackage" value="it.polito.dp2.NFFG.sol3.service.jaxrs"/>
+    <property name="serviceJaxrsPath" value="it/polito/dp2/NFFG/sol3/service/jaxrs"/>
+    
+    <property name="genericJaxb.prefix" value="it/polito/dp2/NFFG/sol3/jaxb"/>
+    <property name="genericJaxbPackage" value="it.polito.dp2.NFFG.sol3.jaxb"/>
+    
+    <property name="client1Path.prefix" value="it/polito/dp2/NFFG/sol3/client1"/>
+    
+    <property name="client2Path.prefix" value="it/polito/dp2/NFFG/sol3/client2"/>
+	
+    <property name="client3Path.prefix" value="it/polito/dp2/NFFG/sol3/test1/client3"/>
+    
+    <!-- The location of the ... web service -->
+    <property name="NEO4JURL" value="http://localhost:${tomcatPort}/Neo4JXML/rest"/>
+    <property name="NEO4JWADL" value="${NEO4JURL}/application.wadl"/>
+    
+    <path id="my.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+    
+    <!-- Target init -->
+    <target name="init">
+        <mkdir dir="${gen.dir}"/>
+    </target>
+    
+    <!-- define wjc task (WADL to Java) -->
+    <taskdef name="wjc" classname="org.jvnet.ws.wadl2java.WJCTask">
+        <classpath>
+            <fileset dir="${lib.dir}" includes="*.jar"/>
+        </classpath>
+    </taskdef>
+    
+    <!-- Target chk-bindings -->
+    <target name="-chk-bindings">
+        <uptodate property="generate-bindings.notRequired" targetfile="${gen.dir}/.flagfile">
+            <srcfiles dir="${schema.dir}" includes="**/*.xsd"/>
+        </uptodate>
+    </target>
+    
+    <!-- Target generate-bindings -->
+    <target name="generate-bindings" unless="generate-bindings.notRequired" depends="init,-chk-bindings"
+        description="Generate bindings from schema">
+        <exec executable="xjc" failonerror="true">
+            <arg value="-d"/>
+            <arg value="${gen.dir}"/>
+            <arg value="-p"/>
+            <arg value="${genericJaxbPackage}"/>
+            <arg value="${schema.dir}/nffgVerifier.xsd"/>
+        </exec>
+        <touch file="${gen.dir}/.flagfile"/>
+    </target>
+    
+    <target name="generate-artifacts" depends="generate-bindings">
+        <echo message="Compiling the descriptions..."/>
+        <wjc description="${NEO4JWADL}" package="${serviceJaxrsPackage}"
+            autoSchemaPackage="false" target="${gen.dir}">
+            <customizations dir="${basedir}" includes="binding.xjc"/>
+            <produces dir="${gen.dir}/${serviceJaxrsPath}" includes="*.java"/>
+            <depends dir="${basedir}" includes="build.xml"/>
+        </wjc>
+    </target>
+    
+    <target name="build-service" depends="generate-artifacts">
+        <echo message="Compiling service..."/>
+        <javac debug="on"
+            fork="true"
+            destdir="${build.dir}"
+            includeantruntime="false"
+            source="${source}"
+            target="${target}">
+            <src path="${src.dir}"/>
+            <src path="${gen.dir}"/>
+            <include name="${genericJaxb.prefix}/**/*.java"/>
+            <include name="${servicePath.prefix}/**/*.java"/>
+            <classpath>
+                <path refid="my.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <target name="build-client" depends="generate-bindings">
+        <echo message="Compiling Client1..."/>
+        <javac debug="on"
+            fork="true"
+            destdir="${build.dir}"
+            includeantruntime="false"
+            source="${source}"
+            target="${target}">
+            <src path="${src.dir}"/>
+            <src path="${gen.dir}"/>
+            <include name="${genericJaxb.prefix}/**/*.java"/>
+            <include name="${client1Path.prefix}/**/*.java"/>
+            <classpath>
+                <path refid="my.classpath"/>
+            </classpath>
+        </javac>
+        <echo message="Compiling Client2..."/>
+        <javac debug="on"
+            fork="true"
+            destdir="${build.dir}"
+            includeantruntime="false"
+            source="${source}"
+            target="${target}">
+            <src path="${src.dir}"/>
+            <src path="${gen.dir}"/>
+            <include name="${genericJaxb.prefix}/**/*.java"/>
+            <include name="${client2Path.prefix}/**/*.java"/>
+            <classpath>
+                <path refid="my.classpath"/>
+            </classpath>
+        </javac>
+    	 <echo message="Compiling Client3..."/>
+    	        <javac debug="on"
+    	            fork="true"
+    	            destdir="${build.dir}"
+    	            includeantruntime="false"
+    	            source="${source}"
+    	            target="${target}">
+    	            <src path="${src.dir}"/>
+    	            <src path="${gen.dir}"/>
+    	            <include name="${genericJaxb.prefix}/**/*.java"/>
+    	            <include name="${client3Path.prefix}/**/*.java"/>
+    	            <classpath>
+    	                <path refid="my.classpath"/>
+    	            </classpath>
+    	        </javac>
+    </target>
+</project>
